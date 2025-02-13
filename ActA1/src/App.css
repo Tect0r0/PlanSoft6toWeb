@@ -1,0 +1,78 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  text-align: center;
+}
+
+.App-header {
+  background-color: #282c34;
+  height: 10vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-body {
+  flex: 1;
+}
+
+.App-footer {
+  background-color: #282c34;
+  height: 10vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  margin-top: auto; /* Para que se quede abajo */
+}
+
+.custom_button_1 {
+  background-color: #282c34;
+  color: white;
+  border: none;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+#revivir {
+  background-color: red;
+  color: black;
+}
+
+#revivir:hover {
+  background-color: rgb(255, 62, 62);
+}
+
+#revivir:active {
+  background-color: rgb(70, 0, 0);
+  color: white;
+}
+
+#aumentar {
+  background-color: rgb(0, 184, 0);
+  color: black;
+}
+
+#aumentar:hover {
+  background-color: rgb(0, 219, 0);
+}
+
+#aumentar:active {
+  background-color: rgb(0, 70, 0);
+  color: white;
+}
