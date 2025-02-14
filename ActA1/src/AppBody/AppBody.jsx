@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
 import "../../src/App.css";
 import Boton from "../Objects/Boton";
-import Footer from "../Footer/Footer";
+import Add from "../Objects/Add";
+import List from "../Objects/List";
 
 function AppBody() {
-    const [timer, setTimer] = useState(5); // Timer en segundos
+    const [timer, setTimer] = useState(0); // Timer en segundos
     const [muertes, setMuertes] = useState(0); // Cantidad de muertes
+
+    const [items, setItems] = useState([
+        { id: 1, name: "Item 1", price: 100 },
+        { id: 2, name: "Item 2", price: 200 },
+        { id: 3, name: "Item 3", price: 300 },
+    ]);
     
     useEffect(() => {
     let interval;
@@ -25,7 +32,6 @@ function AppBody() {
 
     return () => clearInterval(interval);
     }, [timer]);
-
 
     const incrementTimer = () => {
     if (timer === 0) {
@@ -65,6 +71,17 @@ function AppBody() {
         } else {
             return <p>Has muerto {muertes} veces...</p>;
         }
+    };
+
+    const add = (item) => {
+        item.id = items.length + 1;
+        setItems([...items, item]);
+        console.log(items);
+    };
+
+    const del = (id) => {
+        setItems(items.filter((item) =>
+            item.id !== id));
     }
 
     return (
@@ -73,6 +90,8 @@ function AppBody() {
             <p>Vida: {timer}</p>
             <ManageButton />
             <ManageDeath />
+            <Add add={add} />
+            <List items={items} ondelete={del} />
         </div>
     );
 }

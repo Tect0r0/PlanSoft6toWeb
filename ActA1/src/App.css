@@ -49,6 +49,43 @@ html, body {
   cursor: pointer;
 }
 
+ul {
+  margin-top: 30px;
+}
+
+li {
+  width: 100px;
+}
+
+List {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align items to the left */
+  justify-content: flex-start; /* Justify content to the top */
+}
+
+/* Add this CSS for the Item component */
+Item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start; /* Align content to the left */
+}
+
+/* Add this CSS for the list items */
+List ul {
+  display: flex;
+  flex-direction: row;
+  align-items: space-between; /* Align items to the left */
+  justify-content: space-between; /* Justify content to the top */
+}
+
+List li {
+  float: left; /* Float list items to the left */
+  margin-right: 30px; /* Add some space between items */
+}
+
+
 #revivir {
   background-color: red;
   color: black;
