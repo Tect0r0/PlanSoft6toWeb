@@ -3,29 +3,29 @@ html, body {
   margin: 0;
 }
 
-.App {
+.app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   text-align: center;
 }
 
-.App-header {
+.app-header {
   background-color: #282c34;
   height: 10vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
 }
 
-.App-body {
+.app-body {
   flex: 1;
 }
 
-.App-footer {
+.app-footer {
   background-color: #282c34;
   height: 10vh;
   display: flex;

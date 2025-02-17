@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Add = ({ add }) => {
     const [name, setName] = useState("");
-    const [price, setPrice] = useState(0);
+    const [price, setPrice] = useState("");
+    
+    const navigate = useNavigate();
 
     const onsubmit = (e) => {
         e.preventDefault();
@@ -16,7 +19,8 @@ const Add = ({ add }) => {
         }
         add({ name: name, price: price });
         setName("");
-        setPrice(0);
+        setPrice("");
+        navigate('/list');
     };
 
     return (
@@ -24,6 +28,7 @@ const Add = ({ add }) => {
             <input
                 onChange={(e) => setName(e.target.value)}
                 value={name}
+                placeholder='Name'
                 type="text"
                 name=""
                 id=""
@@ -31,6 +36,7 @@ const Add = ({ add }) => {
             <input
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
+                placeholder='Price'
                 type="text"
                 name=""
                 id=""

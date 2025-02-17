@@ -6,10 +6,7 @@ import Footer from './Objects/Footer';
 function App() {
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>Bienvenido al calabozo de la perdición...</p>
-      </header>
+    <div className="app">
       <AppBody />
       <Footer />
     </div>
