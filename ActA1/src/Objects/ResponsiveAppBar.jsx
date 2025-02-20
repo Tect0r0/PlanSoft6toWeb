@@ -17,7 +17,7 @@ import { Link, useNavigate } from "react-router-dom";
 const pages = ["dungeon", "add", "list"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
-function ResponsiveAppBar() {
+const ResponsiveAppBar= ({logout}) => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const navigate = useNavigate();
@@ -35,8 +35,13 @@ function ResponsiveAppBar() {
         navigate(`/${e.target.textContent}`);
     };
 
-    const handleCloseUserMenu = () => {
+    const handleCloseUserMenu = (e) => {
+        const setting = e.target.textContent;
         setAnchorElUser(null);
+        if (setting === "Logout") {
+            logout();
+            navigate("/login");
+        }
     };
 
     return (
