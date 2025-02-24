@@ -12,7 +12,7 @@ import "../../src/App.css";
 function AppBody() {
     const [isLogin, setIsLogin] = useState(() => {
         // Check localStorage for the initial login state
-        return localStorage.getItem("isLogin") === "true";
+        return localStorage.getItem("isLogin") === "true" || false;
     });
 
     const [items, setItems] = useState([
