@@ -6,6 +6,8 @@ import itemsRoutes from "./routes/items.routes.js";
 
 const app = express();
 
+app.use(express.json());
+
 app.use(indexRoutes);
 app.use(itemsRoutes);
 
