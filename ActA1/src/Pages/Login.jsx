@@ -8,22 +8,22 @@ const Login = ({ tryLogin }) => {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
 
-  const onsubmit = (e) => {
+  const onsubmit = async (e) => {
     e.preventDefault();
     if (!username || !password) {
       alert("Please fill in all fields");
       return;
     }
     
-    const isLogin = tryLogin({ username, password }); // Esto da un objeto "abstracto" con propiedades 'usernam' y 'password'
+    const isLogin = await tryLogin({ username, password }); // Esto da un objeto "abstracto" con propiedades 'usernam' y 'password'
     
     if (isLogin) {
       setUsername("");
       setPassword("");
-      alert("Login successful");
+      alert("Login successful!");
       navigate("/dungeon");
     } else {
-      alert("Login failed");
+      alert("Login failed: Incorrect username or password.");
     }
   }
 

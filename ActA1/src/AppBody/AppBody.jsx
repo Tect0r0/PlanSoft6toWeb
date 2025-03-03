@@ -31,16 +31,35 @@ function AppBody() {
         setItems(items.filter((item) => item.id !== id));
     };
 
-    const tryLogin = (user) => {
-        if (user.username === "asd" && user.password === "asd") {
-            setIsLogin(true);
-            localStorage.setItem("isLogin", "true");
-            return true;
-        } else { 
-            setIsLogin(false);
-            return false;
-        }
+const tryLogin = async (user) => {
+  try {
+    const result = await fetch("http://localhost:5000/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(user),
+    });
+
+    if (!result.ok) {
+      throw new Error("Network response was not ok");
     }
+
+    const data = await result.json();
+    console.log(data);
+
+    if (data.isLogin) {
+      setIsLogin(true);
+      localStorage.setItem("isLogin", "true");
+      return true;
+    } else {
+      setIsLogin(false);
+      localStorage.setItem("isLogin", "false");
+      return false;
+    }
+  } catch (error) {
+    console.error("Failed to fetch:", error);
+    return false;
+  }
+};
 
     const logout = () => {
         localStorage.setItem("isLogin", "false");
