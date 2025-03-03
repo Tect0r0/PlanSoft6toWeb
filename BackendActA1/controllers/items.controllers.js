@@ -32,16 +32,18 @@ export const getItem = async (req, res) => {
 export const postItem = async (req, res) => {
   try {
     const pool = await sqlConnect();
+    await pool
+      .request()
+      .input("name", sql.VarChar, req.body.name)
+      .input("price", sql.Float, req.body.price)
+      .query("INSERT INTO Items (Nombre, Precio) VALUES (@name, @price)");
     const data = await pool
       .request()
       .input("name", sql.VarChar, req.body.name)
-      .input("price", sql.Decimal(10, 2), req.body.price)
-      .query(
-        "INSERT INTO Items (Nombre, Precio) VALUES (@name, @price)"
-      );
+      .query("SELECT * FROM Items WHERE Nombre = @name");
 
     // console.log(data);
-    res.status(200).json({ item_added: true }); // Mandar estatus 200 (ok) y un json con un mensaje de que se añadió el item.
+    res.status(200).json({ item_added: true, item: data.recordset[0] }); // Mandar estatus 200 (ok) y un json con un mensaje de que se añadió el item.
   } catch (err) {
     console.error("SQL Query Error:", err);
     res.status(500).send("Server Error");
@@ -55,7 +57,7 @@ export const putItem = async (req, res) => {
       .request()
       .input("ID", sql.Int, req.params.id)
       .input("name", sql.VarChar, req.body.name)
-      .input("price", sql.Decimal(10, 2), req.body.price)
+      .input("price", sql.Float, req.body.price)
       .query(
         "UPDATE Items SET Nombre = @name, Precio = @price WHERE ItemID = @ID"
       );
@@ -77,7 +79,7 @@ export const deleteItem = async (req, res) => {
       .query("DELETE FROM Items WHERE ItemID = @myID");
 
     // console.log(data);
-    res.json({ item_deleted: true });
+    res.status(200).json({ item_deleted: true });
   } catch (err) {
     console.error("SQL Query Error:", err);
     res.status(500).send("Server Error");

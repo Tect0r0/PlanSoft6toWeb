@@ -10,106 +10,129 @@ import Login from "../Pages/Login";
 import "../../src/App.css";
 
 function AppBody() {
-    const [isLogin, setIsLogin] = useState(() => {
-        // Check localStorage for the initial login state
-        return localStorage.getItem("isLogin") === "true" || false;
-    });
+  const [isLogin, setIsLogin] = useState(() => {
+    // Check localStorage for the initial login state
+    return localStorage.getItem("isLogin") === "true" || false;
+  });
 
-    const [items, setItems] = useState([
-        { id: 1, name: "Item 1", price: 100 },
-        { id: 2, name: "Item 2", price: 200 },
-        { id: 3, name: "Item 3", price: 300 },
-    ]);
+  const [items, setItems] = useState([]);
 
-    const add = (item) => {
-        item.id = items.length + 1;
-        setItems([...items, item]);
-        console.log(items);
-    };
+  useEffect(
+    () => {
+      if (isLogin) {
+        getItems();
+      }
+    },
+    [isLogin] // Lista de variables que si cambian, se ejecuta el useEffect
+  );
 
-    const del = (id) => {
-        setItems(items.filter((item) => item.id !== id));
-    };
+  const getItems = async () => {
+    const result = await fetch("http://localhost:5000/items/");
+    const data = await result.json();
+    setItems(data);
+  };
 
-const tryLogin = async (user) => {
-  try {
-    const result = await fetch("http://localhost:5000/login", {
+  const add = async (item) => {
+    const result = await fetch("http://localhost:5000/items/", {
+      // añadir a base de datos
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(user),
+      body: JSON.stringify(item),
     });
-
-    if (!result.ok) {
-      throw new Error("Network response was not ok");
-    }
-
     const data = await result.json();
-    console.log(data);
+    setItems([...items, data.item]);
+    alert(`Item added successfully!`);
+  };
 
-    if (data.isLogin) {
-      setIsLogin(true);
-      localStorage.setItem("isLogin", "true");
-      return true;
-    } else {
-      setIsLogin(false);
-      localStorage.setItem("isLogin", "false");
+  const del = async (id) => {
+    await fetch(`http://localhost:5000/items/${id}`, {
+      // borrar de base de datos
+      method: "DELETE",
+    });
+    setItems(items.filter((item) => item.itemID !== id)); // borrar de interfaz
+    alert(`Item with ID ${id} deleted successfully`);
+    window.location.reload();
+  };
+
+  const tryLogin = async (user) => {
+    try {
+      const result = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(user),
+      });
+
+      if (!result.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await result.json();
+      console.log(data);
+
+      if (data.isLogin) {
+        setIsLogin(true);
+        localStorage.setItem("isLogin", "true");
+        return true;
+      } else {
+        setIsLogin(false);
+        localStorage.setItem("isLogin", "false");
+        return false;
+      }
+    } catch (error) {
+      console.error("Failed to fetch:", error);
       return false;
     }
-  } catch (error) {
-    console.error("Failed to fetch:", error);
-    return false;
-  }
-};
+  };
 
-    const logout = () => {
-        localStorage.setItem("isLogin", "false");
-        setIsLogin(false);
-    }
+  const logout = () => {
+    localStorage.setItem("isLogin", "false");
+    setIsLogin(false);
+  };
 
-    return (
-      <div className="app-body">
-        <BrowserRouter>
-          <Header isLogin={isLogin} logout={logout} />
-          <Routes>
-            <Route // Default route
-              path="/"
-              element={
-                isLogin ? <Navigate to="/dungeon" /> : <Navigate to="/login" /> // Redireccionar si no esta iniciada sesion
-              }
-            />
-            <Route
-              path="/login"
-              element={
-                isLogin ? (
-                  <Navigate to="/dungeon" />
-                ) : (
-                  <Login tryLogin={tryLogin} />
-                )
-              }
-            />
-            <Route
-              path="/dungeon"
-              element={isLogin ? <Dungeon /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="/add"
-              element={isLogin ? <Add add={add} /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="/list"
-              element={
-                isLogin ? (
-                  <List items={items} ondelete={del} />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
-        </BrowserRouter>
-      </div>
-    );
+  return (
+    <div className="app-body">
+      <BrowserRouter>
+        <Header isLogin={isLogin} logout={logout} />
+        <Routes>
+          <Route // Default route
+            path="/"
+            element={
+              isLogin ? <Navigate to="/dungeon" /> : <Navigate to="/login" /> // Redireccionar si no esta iniciada sesion
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              isLogin ? (
+                <Navigate to="/dungeon" />
+              ) : (
+                <Login tryLogin={tryLogin} />
+              )
+            }
+          />
+          <Route
+            path="/dungeon"
+            element={isLogin ? <Dungeon /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/add"
+            element={isLogin ? <Add add={add} /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/list"
+            element={
+              isLogin ? (
+                <List items={items} ondelete={del} />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
+  );
 }
 
 export default AppBody;

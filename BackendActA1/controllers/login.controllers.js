@@ -8,7 +8,7 @@ export const login = async (req, res) => {
       .input("username", sql.VarChar, req.body.username)
       .query("SELECT * FROM Users WHERE username = @username");
 
-    console.log(data.recordset);
+    // console.log(data.recordset);
 
     if (data.recordset.length > 0) {
       let isLogin = data.recordset[0].password === req.body.password;
