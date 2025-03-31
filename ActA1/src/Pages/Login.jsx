@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 const Login = ({ tryLogin }) => {
   const navigate = useNavigate();
 
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const onsubmit = async (e) => {
     e.preventDefault();

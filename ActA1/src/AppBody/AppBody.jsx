@@ -6,6 +6,7 @@ import List from "../Pages/List";
 import Header from "../Objects/Header";
 import Dungeon from "../Pages/Dungeon";
 import Login from "../Pages/Login";
+import SignUp from "../Pages/SignUp";
 
 import "../../src/App.css";
 
@@ -84,6 +85,31 @@ function AppBody() {
     }
   };
 
+  const trySignUp = async (user) => {
+    try {
+      console.log("SignupStep1")
+      const result = await fetch("http://localhost:5000/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(user),
+      });
+      console.log("SignupStep2")
+
+      const data = await result.json();
+      console.log(data.message);
+
+      if (!result.ok) {
+        throw new Error(data.message);
+      }
+      return true;
+
+    } catch (error) {
+      alert("Signup failed: " + error.message);
+      console.error("Failed to fetch:", error);
+      return false;
+    }
+  };
+
   const logout = () => {
     localStorage.setItem("isLogin", "false");
     setIsLogin(false);
@@ -109,6 +135,10 @@ function AppBody() {
                 <Login tryLogin={tryLogin} />
               )
             }
+          />
+          <Route
+            path="/signup"
+            element={<SignUp trySignUp={trySignUp} />}
           />
           <Route
             path="/dungeon"
