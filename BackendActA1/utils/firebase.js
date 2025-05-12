@@ -4,6 +4,7 @@ import { getFirestore } from 'firebase-admin/firestore';
 
 const app = firebase.initializeApp({
     credential: firebase.credential.cert(serviceAccount),
+    databaseURL: "https://probando-713a0-default-rtdb.firebaseio.com"
 });
 
 const db = getFirestore(app);

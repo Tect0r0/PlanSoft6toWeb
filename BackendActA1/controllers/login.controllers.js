@@ -1,79 +1,61 @@
-import { sqlConnect, sql } from "../utils/sql.js";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import db from "../utils/firebase.js"; // Asegúrate de que la ruta sea correcta
 
 export const login = async (req, res) => {
   try {
-    const pool = await sqlConnect();
-    const data = await pool
-      .request()
-      .input("username", sql.VarChar, req.body.username)
-      .query("SELECT * FROM Users WHERE username = @username");
+    const user = await db.collection("users").doc(req.body.username).get();
+    if (!user.exists) {
+      return res.status(401).json({ message: "Invalid username or password" });
+    }
 
-    if (data.recordset.length > 0) {
-      // Hashing process (mismo que el signup)
-      const salt = data.recordset[0].password.slice(0, 10);
-      const preHash = salt + req.body.password;
-      const hashing = crypto.createHash("sha256");
-      const hash = hashing.update(preHash).digest("hex");
-      const hashSalt = salt + hash;
+    const userData = user.data();
+    const salt = userData.password.slice(0, 10);
+    const preHash = salt + req.body.password;
+    const hashing = crypto.createHash("sha256");
+    const hash = hashing.update(preHash).digest("hex");
+    const hashSalt = salt + hash;
 
-      let isLogin = data.recordset[0].password === hashSalt;
+    const isLogin = userData.password === hashSalt;
 
-      // if (isLogin) {
-      //   const token = jwt.sign(
-      //     { sub: data.recordset[0].id },
-      //     process.env.JWT_SECRET,
-      //     { expiresIn: "1h" }
-      //   );
-      //   res
-      //     .status(200)
-      //     .json({ isLogin: isLogin, user: data.recordset[0], token: token });
-      // }
-
-      res.status(200).json({ isLogin: isLogin, user: data.recordset[0] });
+    if (isLogin) {
+      const token = jwt.sign({ sub: userData.id }, process.env.JWT_SECRET, {
+        expiresIn: "1h",
+      });
+      return res.status(200).json({ isLogin: true, user: userData, token });
     } else {
-      res
+      return res
         .status(401)
         .json({ isLogin: false, message: "Invalid username or password" });
     }
   } catch (err) {
-    console.error("SQL Query Error:", err);
+    console.error("Error de login FB:", err);
     res.status(500).json({ message: "Server Error" });
   }
 };
 
 export const signup = async (req, res) => {
   try {
-    const pool = await sqlConnect();
-    const { username, password } = req.body;
-
-    const checkUser = await pool
-      .request()
-      .input("username", sql.VarChar, username)
-      .query("SELECT * FROM Users WHERE username = @username");
-
-    if (checkUser.recordset.length > 0) {
-      return res.status(400).json({ message: "Username already exists" });
-    }
+    const { name, username, password } = req.body;
 
     const salt = crypto.randomBytes(5).toString("hex");
     const preHash = salt + password;
     const hashing = crypto.createHash("sha256");
     const hash = hashing.update(preHash).digest("hex");
-    const hashSalt = salt + hash;
+    const hashed = salt + hash;
 
-    const insertUser = await pool
-      .request()
-      .input("username", sql.VarChar, username)
-      .input("password", sql.VarChar, hashSalt)
-      .query(
-        "INSERT INTO Users (username, password) VALUES (@username, @password)"
-      );
+    await db
+      .collection("users")
+      .doc(username)
+      .set({ name, username, password: hashed });
 
-    res.status(200).json({ message: "User created successfully :)" });
+    res.status(200).json({
+      success: true,
+      message: "User created successfully :)",
+      user: { name, username, password },
+    });
   } catch (err) {
-    console.error("SQL Query Error:", err);
-    res.status(500).json({ message: "Server Error" });
+    console.error("Error de signup FB:", err);
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
