@@ -4,7 +4,10 @@ import db from "../utils/firebase.js"; // Asegúrate de que la ruta sea correcta
 
 export const login = async (req, res) => {
   try {
-    const user = await db.collection("users").doc(req.body.username).get();
+    const user = await db
+      .collection("users_prueba_no_tocar")
+      .doc(req.body.username)
+      .get();
     if (!user.exists) {
       return res.status(401).json({ message: "Invalid username or password" });
     }
@@ -45,7 +48,7 @@ export const signup = async (req, res) => {
     const hashed = salt + hash;
 
     await db
-      .collection("users")
+      .collection("users_prueba_no_tocar")
       .doc(username)
       .set({ name, username, password: hashed });
 

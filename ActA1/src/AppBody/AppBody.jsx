@@ -11,6 +11,7 @@ import SignUp from "../Pages/SignUp";
 import "../../src/App.css";
 
 function AppBody() {
+  const API_URL = process.env.REACT_APP_API_URL;
   const [isLogin, setIsLogin] = useState(() => {
     // Check localStorage for the initial login state
     return localStorage.getItem("isLogin") === "true" || false;
@@ -28,13 +29,14 @@ function AppBody() {
   );
 
   const getItems = async () => {
-    const result = await fetch("http://localhost:5000/items/");
+    const result = await fetch(`${API_URL}/itemsFB/`);
     const data = await result.json();
+    console.log(data);
     setItems(data);
   };
 
   const add = async (item) => {
-    const result = await fetch("http://localhost:5000/items/", {
+    const result = await fetch(`${API_URL}/itemsFB/`, {
       // añadir a base de datos
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -46,18 +48,18 @@ function AppBody() {
   };
 
   const del = async (id) => {
-    await fetch(`http://localhost:5000/items/${id}`, {
+    await fetch(`${API_URL}/items/${id}`, {
       // borrar de base de datos
       method: "DELETE",
     });
-    setItems(items.filter((item) => item.itemID !== id)); // borrar de interfaz
+    setItems(items.filter((item) => item.id !== id)); // borrar de interfaz
     alert(`Item with ID ${id} deleted successfully`);
     window.location.reload();
   };
 
   const tryLogin = async (user) => {
     try {
-      const result = await fetch("http://localhost:5000/login", {
+      const result = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(user),
@@ -87,13 +89,13 @@ function AppBody() {
 
   const trySignUp = async (user) => {
     try {
-      console.log("SignupStep1")
-      const result = await fetch("http://localhost:5000/signup", {
+      console.log("SignupStep1");
+      const result = await fetch(`${API_URL}/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(user),
       });
-      console.log("SignupStep2")
+      console.log("SignupStep2");
 
       const data = await result.json();
       console.log(data.message);
@@ -102,7 +104,6 @@ function AppBody() {
         throw new Error(data.message);
       }
       return true;
-
     } catch (error) {
       alert("Signup failed: " + error.message);
       console.error("Failed to fetch:", error);
@@ -136,10 +137,7 @@ function AppBody() {
               )
             }
           />
-          <Route
-            path="/signup"
-            element={<SignUp trySignUp={trySignUp} />}
-          />
+          <Route path="/signup" element={<SignUp trySignUp={trySignUp} />} />
           <Route
             path="/dungeon"
             element={isLogin ? <Dungeon /> : <Navigate to="/login" />}

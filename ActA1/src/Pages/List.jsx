@@ -6,7 +6,7 @@ const List = ({ items, ondelete }) => {
     <div>
       <ul>
         {items.map((item) => (
-          <Item key={item.ItemID} item={item} ondelete={ondelete} />
+          <Item key={item.id} item={item} ondelete={ondelete} />
         ))}
       </ul>
     </div>
