@@ -37,24 +37,20 @@ function AppBody() {
 
   const add = async (item) => {
     const result = await fetch(`${API_URL}/itemsFB/`, {
-      // añadir a base de datos
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(item),
     });
-    const data = await result.json();
-    setItems([...items, data.item]);
+    await getItems(); // Fetch updated items
     alert(`Item added successfully!`);
   };
 
   const del = async (id) => {
-    await fetch(`${API_URL}/items/${id}`, {
-      // borrar de base de datos
+    await fetch(`${API_URL}/itemsFB/${id}`, {
       method: "DELETE",
     });
-    setItems(items.filter((item) => item.id !== id)); // borrar de interfaz
+    await getItems(); // Fetch updated items
     alert(`Item with ID ${id} deleted successfully`);
-    window.location.reload();
   };
 
   const tryLogin = async (user) => {
