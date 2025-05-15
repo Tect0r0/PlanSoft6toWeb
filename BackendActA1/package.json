@@ -10,6 +10,7 @@
   "description": "",
   "type": "module",
   "dependencies": {
+    "@vendia/serverless-express": "^4.12.6",
     "aws-jwt-verify": "^5.0.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",

@@ -9,11 +9,34 @@ import loginRoutes from "./routes/login.routes.js";
 
 const app = express();
 
-app.use(cors());
+const allowedOrigins = [
+  `http://localhost:3000`,
+  "https://plan-soft6to-web.vercel.app",
+];
+
+// Middleware para eliminar barras diagonales dobles en la URL
+app.use((req, res, next) => {
+  req.url = req.url.replace(/\/+/g, "/");
+  next();
+});
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  })
+);
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(indexRoutes);
 app.use(itemsFBRoutes);
 app.use(loginRoutes);
 
-app.listen(5000, console.log("http://localhost:5000"));
+export default app;
+
+// app.listen(5000, console.log("http://localhost:5000"));
