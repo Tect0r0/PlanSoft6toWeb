@@ -6,7 +6,6 @@ import express from "express";
 import indexRoutes from "./routes/index.routes.js";
 import itemsFBRoutes from "./routes/itemsFB.routes.js";
 import loginRoutes from "./routes/login.routes.js";
-import serverlessExpress from "@vendia/serverless-express";
 
 const app = express();
 
@@ -38,6 +37,13 @@ app.use(indexRoutes);
 app.use(itemsFBRoutes);
 app.use(loginRoutes);
 
-export default serverlessExpress({ app });
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.BACK_PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
+
+export default app;
 
 // app.listen(5000, console.log("http://localhost:5000"));
