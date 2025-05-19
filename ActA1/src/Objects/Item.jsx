@@ -1,16 +1,19 @@
-import React from 'react'
-import Boton from './Boton'
+import React from "react";
+import Boton from "./Boton";
+import { Link } from "react-router-dom";
 
-const Item = ({item, ondelete}) => {
-    return (
-        <div>
-            <ul>
-                <li>{item.name}</li>
-                <li>{item.price}</li>
-                <li><Boton name={'X'} click={() => ondelete(item.id)} /></li>
-            </ul>
-        </div>
-    )
-}
+const Item = ({ item, ondelete }) => {
+  return (
+    <tr>
+      <Link to={`/item/` + item.id + "?q=reactSS"}>
+        <li>{item.name}</li>
+      </Link>
+      <li>{item.price}</li>
+      <li>
+        <Boton click={() => ondelete(item.id)} name={"X"} />
+      </li>
+    </tr>
+  );
+};
 
 export default Item;

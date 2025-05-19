@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-
 import Add from "../Pages/Add";
 import List from "../Pages/List";
 import Header from "../Objects/Header";
 import Dungeon from "../Pages/Dungeon";
 import Login from "../Pages/Login";
 import SignUp from "../Pages/SignUp";
+import ItemInfo from "../Objects/ItemInfo";
 
 import "../../src/App.css";
 
@@ -153,6 +153,7 @@ function AppBody() {
               )
             }
           />
+          <Route path="/item/:id" element={<ItemInfo items={items} />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>

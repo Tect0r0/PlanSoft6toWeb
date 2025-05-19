@@ -6,15 +6,19 @@ const List = ({ items, ondelete }) => {
     return <div>No items to display.</div>;
   }
   return (
-    <div>
-      <ul>
-        {items
-          .filter(item => item && item.id)
-          .map((item) => (
-            <Item key={item.id} item={item} ondelete={ondelete} />
-          ))}
-      </ul>
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <td>Name</td>
+          <td>Delete?</td>
+        </tr>
+      </thead>
+      <tbody>
+        {items.map((item) => (
+          <Item item={item} key={item.id} ondelete={ondelete} />
+        ))}
+      </tbody>
+    </table>
   );
 };
 
