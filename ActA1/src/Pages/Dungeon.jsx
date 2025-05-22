@@ -1,12 +1,12 @@
-import React from 'react'
-import { useState, useEffect } from 'react';
-import Boton from '../Objects/Boton';
-
+import React from "react";
+import { useState, useEffect } from "react";
+import Boton from "../Objects/Boton";
+import useCount from "../Hooks/useCount";
 
 export default function Dungeon() {
-
-    const [timer, setTimer] = useState(0); // Timer en segundos
-    const [muertes, setMuertes] = useState(0); // Cantidad de muertes
+  const [timer, setTimer] = useState(0); // Timer en segundos
+  const [muertes, setMuertes] = useState(0); // Cantidad de muertes
+  const { count, sum, rest } = useCount();
 
   useEffect(() => {
     let interval;
@@ -74,6 +74,9 @@ export default function Dungeon() {
       <p>Vida: {timer}</p>
       <ManageButton />
       <ManageDeath />
+      <div>{count}</div>
+      <Boton name="Suma" click={sum} />
+      <Boton name="Resta" click={rest} />
     </div>
   );
 }

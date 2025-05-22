@@ -8,81 +8,20 @@ import Dungeon from "../Pages/Dungeon";
 import Login from "../Pages/Login";
 import SignUp from "../Pages/SignUp";
 import ItemInfo from "../Objects/ItemInfo";
+import useItems from "../Hooks/useItems";
+import useAuth from "../Hooks/useAuth";
 
 import "../../src/App.css";
 
 function AppBody() {
+  const { items, addItem, delItem, getItems } = useItems();
+  const { isLogin, tryLogin, logout } = useAuth();
+
   const API_URL = process.env.REACT_APP_API_URL;
-  const [isLogin, setIsLogin] = useState(() => {
-    // Check localStorage for the initial login state
-    return localStorage.getItem("isLogin") === "true" || false;
-  });
 
-  const [items, setItems] = useState([]);
-
-  useEffect(
-    () => {
-      if (isLogin) {
-        getItems();
-      }
-    },
-    [isLogin] // Lista de variables que si cambian, se ejecuta el useEffect
-  );
-
-  const getItems = async () => {
-    const result = await fetch(`${API_URL}/itemsFB/`);
-    const data = await result.json();
-    console.log(data);
-    setItems(data);
-  };
-
-  const add = async (item) => {
-    const result = await fetch(`${API_URL}/itemsFB/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(item),
-    });
-    await getItems(); // Fetch updated items
-    alert(`Item added successfully!`);
-  };
-
-  const del = async (id) => {
-    await fetch(`${API_URL}/itemsFB/${id}`, {
-      method: "DELETE",
-    });
-    await getItems(); // Fetch updated items
-    alert(`Item with ID ${id} deleted successfully`);
-  };
-
-  const tryLogin = async (user) => {
-    try {
-      const result = await fetch(`${API_URL}/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(user),
-      });
-
-      if (!result.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const data = await result.json();
-      console.log(data);
-
-      if (data.isLogin) {
-        setIsLogin(true);
-        localStorage.setItem("isLogin", "true");
-        return true;
-      } else {
-        setIsLogin(false);
-        localStorage.setItem("isLogin", "false");
-        return false;
-      }
-    } catch (error) {
-      console.error("Failed to fetch:", error);
-      return false;
-    }
-  };
+  useEffect(() => {
+    getItems();
+  }, []);
 
   const trySignUp = async (user) => {
     try {
@@ -106,11 +45,6 @@ function AppBody() {
       console.error("Failed to fetch:", error);
       return false;
     }
-  };
-
-  const logout = () => {
-    localStorage.setItem("isLogin", "false");
-    setIsLogin(false);
   };
 
   return (
@@ -141,13 +75,13 @@ function AppBody() {
           />
           <Route
             path="/add"
-            element={isLogin ? <Add add={add} /> : <Navigate to="/login" />}
+            element={isLogin ? <Add add={addItem} /> : <Navigate to="/login" />}
           />
           <Route
             path="/list"
             element={
               isLogin ? (
-                <List items={items} ondelete={del} />
+                <List items={items} ondelete={delItem} />
               ) : (
                 <Navigate to="/login" />
               )
