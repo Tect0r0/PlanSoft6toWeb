@@ -12,8 +12,10 @@ import useItems from "../Hooks/useItems";
 import useAuth from "../Hooks/useAuth";
 
 import "../../src/App.css";
+import LifeCycle from "../Pages/LifeCycle";
 
 function AppBody() {
+  const [show, setShow] = useState(false);
   const { items, addItem, delItem, getItems } = useItems();
   const { isLogin, tryLogin, logout } = useAuth();
 
@@ -91,6 +93,10 @@ function AppBody() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>
+      <button onClick={() => setShow(!show)}>
+        {show ? "Esconder" : "Mostrar"}
+      </button>
+      {show && <LifeCycle />}
     </div>
   );
 }
